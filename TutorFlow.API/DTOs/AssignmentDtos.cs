@@ -6,6 +6,7 @@ public record CreateAssignmentDto(
     string? StarterCode,
     string Language,
     int XPReward,
+    string ExpectedOutput,
     DateTime? DueDate
 );
 
@@ -15,6 +16,7 @@ public record UpdateAssignmentDto(
     string? StarterCode,
     string Language,
     int XPReward,
+    string ExpectedOutput,
     DateTime? DueDate
 );
 
@@ -25,6 +27,7 @@ public record AssignmentResponseDto(
     string? StarterCode,
     string Language,
     int XPReward,
+    string ExpectedOutput,
     DateTime CreatedAt,
     DateTime? DueDate,
     int StudentCount

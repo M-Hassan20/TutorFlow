@@ -10,14 +10,17 @@ public class Student
     public DateTime EnrolledAt { get; set; } = DateTime.UtcNow;
     public bool IsActive { get; set; } = true;
 
-    // XP / Gamification (used in Phase 4 but defined now)
+    // XP / Gamification
     public int XP { get; set; } = 0;
+
+    // Link to identity user — set when tutor links a registered student
+    public string? ApplicationUserId { get; set; }
 
     // Foreign key — which tutor owns this student
     public string TutorId { get; set; } = string.Empty;
-    //public ApplicationUser Tutor { get; set; } = null!;
 
     // Navigation
     public ICollection<Assignment> Assignments { get; set; } = new List<Assignment>();
     public ICollection<Submission> Submissions { get; set; } = new List<Submission>();
+    public ICollection<Badge> Badges { get; set; } = new List<Badge>();
 }

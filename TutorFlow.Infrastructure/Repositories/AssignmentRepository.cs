@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using TutorFlow.Infrastructure;
 using TutorFlow.Core.Entities;
 using TutorFlow.Core.Interfaces;
 using TutorFlow.Infrastructure.Data;
@@ -17,19 +16,29 @@ public class AssignmentRepository : IAssignmentRepository
 
     public async Task<IEnumerable<Assignment>> GetAllByTutorAsync(string tutorId)
     {
-        return await _context.Assignments
-            .Where(a => a.TutorId == tutorId)
+        var query = _context.Assignments
             .Include(a => a.Students)
-            .OrderByDescending(a => a.CreatedAt)
-            .ToListAsync();
+            .AsQueryable();
+
+        // When tutorId is provided (tutor context), filter to their own assignments
+        // When empty (student context), return all assignments
+        if (!string.IsNullOrEmpty(tutorId))
+            query = query.Where(a => a.TutorId == tutorId);
+
+        return await query.OrderByDescending(a => a.CreatedAt).ToListAsync();
     }
 
     public async Task<Assignment?> GetByIdAsync(int id, string tutorId)
     {
-        return await _context.Assignments
+        var query = _context.Assignments
             .Include(a => a.Students)
             .Include(a => a.Submissions)
-            .FirstOrDefaultAsync(a => a.Id == id && a.TutorId == tutorId);
+            .Where(a => a.Id == id);
+
+        if (!string.IsNullOrEmpty(tutorId))
+            query = query.Where(a => a.TutorId == tutorId);
+
+        return await query.FirstOrDefaultAsync();
     }
 
     public async Task<Assignment> CreateAsync(Assignment assignment)
@@ -51,6 +60,7 @@ public class AssignmentRepository : IAssignmentRepository
         existing.StarterCode = assignment.StarterCode;
         existing.Language = assignment.Language;
         existing.XPReward = assignment.XPReward;
+        existing.ExpectedOutput = assignment.ExpectedOutput;
         existing.DueDate = assignment.DueDate;
 
         await _context.SaveChangesAsync();

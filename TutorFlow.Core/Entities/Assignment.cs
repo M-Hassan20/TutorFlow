@@ -8,6 +8,7 @@ public class Assignment
     public string? StarterCode { get; set; }
     public string Language { get; set; } = "python"; // default language
     public int XPReward { get; set; } = 50;
+    public string? ExpectedOutput { get; set; } //To grade submissions
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? DueDate { get; set; }
 

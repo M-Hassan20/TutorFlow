@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using TutorFlow.Infrastructure;
 using TutorFlow.Core.Entities;
 
 namespace TutorFlow.Infrastructure.Data;
@@ -12,18 +11,13 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Student> Students => Set<Student>();
     public DbSet<Assignment> Assignments => Set<Assignment>();
     public DbSet<Submission> Submissions => Set<Submission>();
+    public DbSet<Badge> Badges => Set<Badge>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
 
-        // Student → Tutor (many students per tutor)
-        //builder.Entity<Student>()
-        //    .HasOne(s => s.Tutor)
-        //    .WithMany(u => u.Students)
-        //    .HasForeignKey(s => s.TutorId)
-        //    .OnDelete(DeleteBehavior.Cascade);
-
+        // Student → Tutor
         builder.Entity<Student>()
             .HasOne<ApplicationUser>()
             .WithMany(u => u.Students)
@@ -31,12 +25,6 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>
             .OnDelete(DeleteBehavior.Cascade);
 
         // Assignment → Tutor
-        //builder.Entity<Assignment>()
-        //    .HasOne(a => a.Tutor)
-        //    .WithMany()
-        //    .HasForeignKey(a => a.TutorId)
-        //    .OnDelete(DeleteBehavior.Cascade);
-
         builder.Entity<Assignment>()
             .HasOne<ApplicationUser>()
             .WithMany()
@@ -62,5 +50,17 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>
             .HasMany(a => a.Students)
             .WithMany(s => s.Assignments)
             .UsingEntity(j => j.ToTable("AssignmentStudents"));
+
+        // Badge → Student
+        builder.Entity<Badge>()
+            .HasOne(b => b.Student)
+            .WithMany(s => s.Badges)
+            .HasForeignKey(b => b.StudentId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // ApplicationUserId is a simple nullable string FK (no nav property needed)
+        builder.Entity<Student>()
+            .Property(s => s.ApplicationUserId)
+            .IsRequired(false);
     }
 }

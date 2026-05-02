@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TutorFlow.Infrastructure.Data;
 
@@ -10,9 +11,11 @@ using TutorFlow.Infrastructure.Data;
 namespace TutorFlow.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260420081913_AddExpectedOutput")]
+    partial class AddExpectedOutput
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.0");
@@ -204,37 +207,6 @@ namespace TutorFlow.Infrastructure.Migrations
                     b.ToTable("Assignments");
                 });
 
-            modelBuilder.Entity("TutorFlow.Core.Entities.Badge", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("EarnedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Icon")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("StudentId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("StudentId");
-
-                    b.ToTable("Badges");
-                });
-
             modelBuilder.Entity("TutorFlow.Core.Entities.Student", b =>
                 {
                     b.Property<int>("Id")
@@ -243,9 +215,6 @@ namespace TutorFlow.Infrastructure.Migrations
 
                     b.Property<int>("Age")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("ApplicationUserId")
-                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("EnrolledAt")
                         .HasColumnType("TEXT");
@@ -465,17 +434,6 @@ namespace TutorFlow.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("TutorFlow.Core.Entities.Badge", b =>
-                {
-                    b.HasOne("TutorFlow.Core.Entities.Student", "Student")
-                        .WithMany("Badges")
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Student");
-                });
-
             modelBuilder.Entity("TutorFlow.Core.Entities.Student", b =>
                 {
                     b.HasOne("TutorFlow.Infrastructure.ApplicationUser", null)
@@ -511,8 +469,6 @@ namespace TutorFlow.Infrastructure.Migrations
 
             modelBuilder.Entity("TutorFlow.Core.Entities.Student", b =>
                 {
-                    b.Navigation("Badges");
-
                     b.Navigation("Submissions");
                 });
 

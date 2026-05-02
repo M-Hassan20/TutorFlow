@@ -1,14 +1,15 @@
-using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Text;
+using TutorFlow.API.Services;
 using TutorFlow.Core.Entities;
 using TutorFlow.Core.Interfaces;
+using TutorFlow.Infrastructure;
 using TutorFlow.Infrastructure.Data;
 using TutorFlow.Infrastructure.Repositories;
-using TutorFlow.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,6 +56,10 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddScoped<IStudentRepository, StudentRepository>();
 builder.Services.AddScoped<IAssignmentRepository, AssignmentRepository>();
 builder.Services.AddScoped<ISubmissionRepository, SubmissionRepository>();
+
+// ── External Services ─────────────────────────────────────────────────────
+builder.Services.AddScoped<PistonService>();
+builder.Services.AddScoped<DryRunService>();
 
 // ── Controllers & Swagger ─────────────────────────────────────────────────
 builder.Services.AddControllers();
